@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa 3D Topográfico en Realidad Aumentada</title>
+    
+    <!-- Cargar MindAR y A-Frame -->
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image.prod.js"></script>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-aframe.prod.js"></script>
+    
+    <style>
+        /* Estilos para que se vea profesional */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #000;
+            overflow: hidden;
+        }
+        
+        #loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        #instructions {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            z-index: 999;
+            font-size: 18px;
+            border-bottom: 2px solid #4CAF50;
+        }
+        
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #4CAF50;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        #startButton {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        #startButton:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Pantalla de carga inicial -->
+    <div id="loading">
+        <div class="loader"></div>
+        <h2>Cargando Mapa Topográfico 3D</h2>
+        <p>Por favor espera...</p>
+        <button id="startButton" style="display: none;">Comenzar AR</button>
+    </div>
+
+    <!-- Instrucciones durante la experiencia -->
+    <div id="instructions" style="display: none;">
+        📱 Apunta con tu cámara al mapa 2D para ver el modelo 3D
+    </div>
+
+    <!-- Escena de Realidad Aumentada -->
+    <a-scene 
+        mindar-image="imageTargetSrc: target.mind; autoStart: false;" 
+        color-space="sRGB" 
+        embedded 
+        renderer="colorManagement: true, physicallyCorrectLights"
+        vr-mode-ui="enabled: false"
+    >
+        <a-assets>
+            <!-- TU MODELO 3D de Blender GIS -->
+            <a-asset-item id="modeloMapa" src="modelo-3d.glb"></a-asset-item>
+        </a-assets>
+
+        <!-- Cámara -->
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+        <!-- Image Target -->
+        <a-entity mindar-image-target="targetIndex: 0">
+            <!-- TU MODELO 3D CON LAS ESCALAS EXACTAS DE 8th WALL -->
+            <a-entity 
+                gltf-model="#modeloMapa"
+                animation-mixer="clip: *; loop: repeat;"
+                position="0 0.05 0"
+                scale="0.0027 0.106 0.027"  <!-- TUS ESCALAS EXACTAS -->
+                rotation="-90 0 0"          <!-- Rotación para GIS -->
+            >
+            </a-entity>
+        </a-entity>
+    </a-scene>
+
+    <script>
+        // Esperar a que todo cargue
+        window.addEventListener('load', function() {
+            const scene = document.querySelector('a-scene');
+            const loading = document.getElementById('loading');
+            const instructions = document.getElementById('instructions');
+            const startButton = document.getElementById('startButton');
+            
+            // Cuando A-Frame esté listo
+            scene.addEventListener('loaded', function() {
+                // Mostrar botón de comenzar
+                startButton.style.display = 'block';
+                document.querySelector('#loading h2').textContent = '¡Mapa Cargado!';
+                document.querySelector('#loading p').textContent = 'Haz clic en comenzar para iniciar la cámara AR';
+            });
+            
+            // IniciAR AR cuando hagan clic
+            startButton.addEventListener('click', function() {
+                // Ocultar pantalla de carga
+                loading.style.display = 'none';
+                
+                // Mostrar instrucciones
+                instructions.style.display = 'block';
+                
+                // IniciAR MindAR
+                const mindarScene = scene.components["mindar-image"];
+                mindarScene.start();
+                
+                // Ocultar instrucciones después de 5 segundos
+                setTimeout(function() {
+                    instructions.style.display = 'none';
+                }, 5000);
+            });
+        });
+        
+        // Mostrar mensaje cuando se detecte el target
+        document.querySelector('a-scene').addEventListener('targetFound', event => {
+            console.log('¡Mapa 2D detectado! Mostrando modelo 3D topográfico');
+        });
+        
+        // Mostrar mensaje cuando se pierda el target
+        document.querySelector('a-scene').addEventListener('targetLost', event => {
+            console.log('Mapa no detectado');
+        });
+    </script>
+</body>
+</html>
