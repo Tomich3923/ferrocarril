@@ -2,30 +2,52 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Mapa 3D AR - Versión Simple</title>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image.prod.js"></script>
+    <title>Mapa 3D AR - Versión Simple (Corregido)</title>
+    <!-- NO incluir mindar-image.prod.js para A-Frame -->
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        /* Opcional: Oculta overlay blanco que a veces genera MindAR */
+        .mindar-ui-overlay {
+            display: none !important;
+            opacity: 0 !important;
+        }
+        /* Ayuda: fuerza la cámara a fullscreen */
+        html, body, a-scene {
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
 </head>
 <body>
-    <a-scene 
-        mindar-image="imageTargetSrc: target.mind; autoStart: true;" 
-        embedded 
+    <a-scene
+        mindar-image="imageTargetSrc: target.mind; autoStart: true;"
+        embedded
         color-space="sRGB"
+        vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: true"
+        renderer="colorManagement: true, physicallyCorrectLights"
+        style="width: 100vw; height: 100vh;"
     >
         <a-assets>
+            <!-- Usa la ruta correcta, asegúrate que esté exactamente así en la raíz o cambia la ruta -->
             <a-asset-item id="modeloMapa" src="modelo-3d.glb"></a-asset-item>
         </a-assets>
 
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
         <a-entity mindar-image-target="targetIndex: 0">
-            <a-entity 
+            <a-entity
                 gltf-model="#modeloMapa"
-                animation-mixer="clip: *;"
-                position="0 0.05 0"
-                scale="0.0027 0.106 0.027"
-                rotation="-90 0 0"
+                position="0 0 0"
+                scale="1 1 1"
+                rotation="0 0 0"
             ></a-entity>
         </a-entity>
     </a-scene>
