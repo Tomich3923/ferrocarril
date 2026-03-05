@@ -19,17 +19,31 @@
 <body>
 
 <script>
+
 const onxrloaded = () => {
+
   XR8.XrController.configure({
     imageTargetData: [
       require('./image-targets/Imagetarget2.json')
-    ],
+    ]
   })
+
+  XR8.addCameraPipelineModules([
+    XR8.GlTextureRenderer.pipelineModule(),
+    XR8.XrController.pipelineModule(),
+    XR8.Threejs.pipelineModule(),
+    XR8.CanvasScreenshot.pipelineModule(),
+    XR8.ImageTarget.pipelineModule()
+  ])
+
+  XR8.run({canvas: document.createElement('canvas')})
+
 }
 
 window.XR8
   ? onxrloaded()
   : window.addEventListener('xrloaded', onxrloaded)
+
 </script>
 
 <script src="bundle.js"></script>
