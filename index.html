@@ -2,30 +2,35 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ferrocarril México-Veracruz 1877</title>
-
-<meta itemprop="name" content="Ferrocarril México-Veracruz 1877">
-<meta name="twitter:title" content="Ferrocarril México-Veracruz 1877">
-<meta property="og:title" content="Ferrocarril México-Veracruz 1877">
-<meta property="og:site_name" content="Ferrocarril México-Veracruz 1877">
-
-<meta name="description" content="">
-<meta itemprop="description" content="">
-<meta property="og:description" content="">
-<meta name="twitter:description" content="">
 
 <script crossorigin="anonymous" src="./external/runtime/runtime.js"></script>
 
-<script crossorigin="anonymous"
-src="./external/xr/xr.js"
-async="true"
-data-preload-chunks="face, slam, image-target"></script>
+<script
+  crossorigin="anonymous"
+  src="./external/xr/xr.js"
+  async
+  data-preload-chunks="image-target"
+></script>
 
 </head>
 
 <body>
+
+<script>
+const onxrloaded = () => {
+  XR8.XrController.configure({
+    imageTargetData: [
+      require('./image-targets/Imagetarget2.json')
+    ],
+  })
+}
+
+window.XR8
+  ? onxrloaded()
+  : window.addEventListener('xrloaded', onxrloaded)
+</script>
 
 <script src="bundle.js"></script>
 
