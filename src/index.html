@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ferrocarril México-Veracruz 1877</title>
+
+  <!-- Runtime -->
+  <script crossorigin="anonymous" src="./external/runtime/runtime.js"></script>
+
+  <!-- XR (CORREGIDO: sin image-target) -->
+  <script
+    crossorigin="anonymous"
+    src="./external/xr/xr.js"
+    async
+    data-preload-chunks="slam"
+  ></script>
+
+</head>
+
+<body>
+
+<script>
+const onxrloaded = async () => {
+  // Cargar correctamente el JSON del image target
+  const response = await fetch('./image-targets/Imagetarget2.json')
+  const data = await response.json()
+
+  XR8.XrController.configure({
+    imageTargetData: [data],
+  })
+}
+
+// Espera a que XR cargue
+window.XR8
+  ? onxrloaded()
+  : window.addEventListener('xrloaded', onxrloaded)
+</script>
+
+<script src="bundle.js"></script>
+
+</body>
+</html>
